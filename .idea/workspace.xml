@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="1d2a0bf1-ff3f-4f6f-8ca6-8e320b20e343" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="CSS File" />
+        <option value="JavaScript File" />
+        <option value="HTML File" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectId" id="1bYobBf3Fa7QZCnnmrfyP8weh7H" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="list.type.of.created.stylesheet" value="CSS" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="1d2a0bf1-ff3f-4f6f-8ca6-8e320b20e343" name="Default Changelist" comment="" />
+      <created>1588818456101</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1588818456101</updated>
+      <workItem from="1588818457571" duration="5259000" />
+      <workItem from="1588902605934" duration="3910000" />
+      <workItem from="1589444840663" duration="543000" />
+      <workItem from="1589455223636" duration="233000" />
+      <workItem from="1589507198728" duration="210000" />
+      <workItem from="1589544164349" duration="596000" />
+      <workItem from="1589678941417" duration="23550000" />
+      <workItem from="1589888804238" duration="10807000" />
+      <workItem from="1589935319599" duration="8674000" />
+      <workItem from="1589986805599" duration="2329000" />
+      <workItem from="1590158812884" duration="2000" />
+      <workItem from="1590571123468" duration="4098000" />
+      <workItem from="1590587346357" duration="17133000" />
+      <workItem from="1590932418860" duration="3865000" />
+      <workItem from="1591001735932" duration="251000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="1" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="320" y="115" key="#Inspections" timestamp="1589784689131">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="320" y="115" key="#Inspections/0.0.1440.900@0.0.1440.900" timestamp="1589784689131" />
+    <state x="450" y="260" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1589788167013">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="450" y="260" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1440.900@0.0.1440.900" timestamp="1589788167013" />
+    <state x="461" y="293" key="#com.intellij.ide.actions.ChooseComponentsToExportDialog" timestamp="1589788004889">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="461" y="293" key="#com.intellij.ide.actions.ChooseComponentsToExportDialog/0.0.1440.900@0.0.1440.900" timestamp="1589788004889" />
+    <state x="385" y="196" width="670" height="676" key="search.everywhere.popup" timestamp="1589960994600">
+      <screen x="0" y="0" width="1440" height="900" />
+    </state>
+    <state x="385" y="196" width="670" height="676" key="search.everywhere.popup/0.0.1440.900@0.0.1440.900" timestamp="1589960994600" />
+  </component>
+</project>
