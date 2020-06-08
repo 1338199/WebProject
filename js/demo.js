@@ -156,6 +156,7 @@ function Initialize(windowEvent){
             canvas: $("#main_canvas")[0],
             position: new THREE.Vector2(),
             shoot: false,
+            exits: false,
         };
         window.onmousemove = function (e) {
             inputManager.position.set(e.pageX/this.innerWidth - 0.5,e.pageY/this.innerHeight - 0.5);
@@ -164,6 +165,9 @@ function Initialize(windowEvent){
             if (e.keyCode === 115){
                 inputManager.shoot = true;
 
+            }
+            else if(e.keyCode === 101){
+                inputManager.exits = true;
             }
         }
     }
@@ -757,6 +761,10 @@ function InitializeScene(){
 
 
         scene.frameUpdate = function () {
+            if(inputManager.exits){
+                inputManager.exits = false;
+                sceneManager.loadScene("main_menu");
+            }
             this.speed += computeManager.deltaTime/10;
             camera.position.set(Math.sin(spaceshipGroup.position.x/10) * 2,Math.sin(spaceshipGroup.position.y/10) * 2 + 5   ,-20);
             camera.lookAt(0,0,0);
@@ -804,6 +812,7 @@ function InitializeScene(){
                         fire.addSource(0.5,0.1,0.1,1.0,0.0,1.0);
                         fire.rotateX(Math.PI);
                         scene.add(fire);
+                        setTimeout("scene.remove(fire)",2000);
                         this.position.set(spaceshipGroup.position.x,spaceshipGroup.position.y,spaceshipGroup.position.z);
                         move=false;
                     }
@@ -909,6 +918,10 @@ function InitializeScene(){
 
 
         scene1.frameUpdate = function () {
+            if(inputManager.exits){
+                inputManager.exits = false;
+                sceneManager.loadScene("main_menu");
+            }
             this.speed += computeManager.deltaTime/10;
             camera.position.set(Math.sin(spaceshipGroup.position.x/10) * 2,Math.sin(spaceshipGroup.position.y/10) * 2 + 5   ,-20);
             camera.lookAt(0,0,0);
