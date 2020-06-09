@@ -10,7 +10,9 @@ var assetManager;
 var inputManager;
 var colorIndex = 0;
 var musicIndex = 0;
+var helpindex = 0;
 var gamesize = 1;
+var sceneIndex = 0;
 window.onload = Initialize;
 window.onresize = AdaptWindow;
 
@@ -169,6 +171,12 @@ function Initialize(windowEvent){
             else if(e.keyCode === 101){
                 inputManager.exits = true;
             }
+            else if(e.keyCode === 97){
+                inputManager.accelerate = true;
+            }
+            else if(e.keyCode === 113){
+                inputManager.slowdown = true;
+            }
         }
     }
 
@@ -321,6 +329,8 @@ function Prepare(){
         loadRocketObj(j);
     }
 
+    loadAim();
+
     loadRocket();
 
     requestAnimationFrame(Update);
@@ -349,6 +359,20 @@ function loadRocketObj(j) {
         OBJLoader.setMaterials(materials);
         OBJLoader.load('model/rocket1.obj', function(obj) {
             obj.name = "rocket"+j.toString();
+            assetManager.addObject(obj);
+        })
+    });
+}
+
+function loadAim() {
+    var OBJLoader = new THREE.OBJLoader();//obj加载器
+    var MTLLoader = new THREE.MTLLoader();//材质文件加载器
+    MTLLoader.load('model/obj/Triangle.mtl', function(materials) {
+        // 返回一个包含材质的对象MaterialCreator
+        //obj的模型会和MaterialCreator包含的材质对应起来
+        OBJLoader.setMaterials(materials);
+        OBJLoader.load('model/obj/Triangle.obj', function(obj) {
+            obj.name = "aim";
             assetManager.addObject(obj);
         })
     });
@@ -551,13 +575,25 @@ function InitializeScene(){
                 this.position.set(11,-5,0);
             };
 
+            // var aim = assetManager.objects['aim'];
+            // console.log(aim);
+            // aim.scale.set(0.1,0.1,0.1);
+            // aim.position.set(8,0,0);
+            // aim.rotateX(3*Math.PI/2);
+            // // aim.rotateY(Math.PI/2);
+            // console.log(aim);
+            // // aim.material.color = "0xff0000";
+            // scene.add(aim);
 
+
+                // mesh.castShadow = true;
+                // mesh.receiveShadow = true;
             spaceshipGroup.awake = function () {
                 this.isLaunched = false;
                 this.isAssembled = false;
                 this.velocity = new THREE.Vector3();
                 this.position.set(0,0,-10);
-                this.scale.set(0.01,0.01,0.01);
+                this.scale.set(0.01*gamesize,0.01*gamesize,0.01*gamesize);
             };
 
             spaceshipGroup.launch = function (i) {
@@ -675,7 +711,6 @@ function InitializeScene(){
             uiManager.showMenu("gameplay_menu");
 
 
-
             this.background = assetManager.cubeMap;
             this.scoreBoard = uiManager.menus["gameplay_menu"].scoreBoard;
 
@@ -719,6 +754,19 @@ function InitializeScene(){
             directionalLight.shadow.mapSize.height = assetManager.shadowSize;
             this.add(spaceshipGroup);
 
+            var aim = assetManager.objects['aim'];
+            aim.awake = function(){
+                this.scale.set(0.3,0.3,0.3);
+                this.position.set(spaceshipGroup.position.x,spaceshipGroup.position.y,90);
+            };
+            aim.frameUpdate = function () {
+                this.position.set(spaceshipGroup.position.x,spaceshipGroup.position.y,50);
+            };
+            this.add(aim);
+
+
+
+            this.add(aim);
 
             for(var x=-1;x<2;x++){
                 for(var y=-1;y<2;y++){
@@ -756,8 +804,9 @@ function InitializeScene(){
         scene.start = function () {
             camera.position.set(0,0,10);
             this.distance = 0;
-            this.speed = 1;
+            this.speed = 4;
         };
+
 
 
         scene.frameUpdate = function () {
@@ -765,18 +814,33 @@ function InitializeScene(){
                 inputManager.exits = false;
                 sceneManager.loadScene("main_menu");
             }
+            scene.traverse(function(obj) {
+                // console.log(scene);
+                // console.log(this.sceneManager.scenes['game_play']);
+                if (obj.type === "Fire") {
+                    setTimeout(function(){
+                        scene.remove(obj);
+                    },600);
+                }
+            });
             this.speed += computeManager.deltaTime/10;
+            if(inputManager.accelerate){
+                inputManager.accelerate = false;
+                this.speed += 0.4;
+            }
+            if(inputManager.slowdown && this.speed > 0){
+                inputManager.slowdown = false;
+                this.speed -= 0.8;
+            }
             camera.position.set(Math.sin(spaceshipGroup.position.x/10) * 2,Math.sin(spaceshipGroup.position.y/10) * 2 + 5   ,-20);
             camera.lookAt(0,0,0);
             this.distance += computeManager.deltaTime;
-            this.scoreBoard.innerHTML = "Score : " + this.distance.toFixed(2) + " X " + this.speed.toFixed(2) + " = " + (this.distance*this.speed).toFixed(2).toString();
+            this.scoreBoard.innerHTML = "Score : " + this.distance.toFixed(2) + " X " +
+                this.speed.toFixed(2) + " = " + (this.distance*this.speed).toFixed(2).toString()+
+                "<br/><img src='images/speed.png' width=\"25px\" height=\"25px\"> <hr/> Speed:"+this.speed.toFixed(2);
             if(inputManager.shoot){
                 audio1.play();
-                scene.traverse(function(obj) {
-                    if (obj.type === "Fire") {
-                        scene.remove(obj);
-                    }
-                });
+
 
                 var move =true;
                 inputManager.shoot = false;
@@ -794,25 +858,26 @@ function InitializeScene(){
                     else{
                         this.position.set(spaceshipGroup.position.x,spaceshipGroup.position.y,spaceshipGroup.position.z);
                     }
-                    if(this.isColliding(redBoxes[redBoxIter])){
+                    //this.isColliding(redBoxes[redBoxIter])
+                    //this.position.distanceTo(redBoxes[redBoxIter].position)<6 && redBoxes[redBoxIter].position.z>6
+                    if(this.position.distanceTo(redBoxes[redBoxIter].position)<7 && redBoxes[redBoxIter].position.z>4){
                         audio2.play();
-                        var redBoxIter1 =redBoxIter;
-                        redBoxIter = (redBoxIter + 1) % 4;
-                        randNode = possiblePosition[computeManager.randInt(0,possiblePosition.length - 1)];
-                        redBoxes[redBoxIter1].position.set(randNode.x,randNode.y,90);
                         var plane=new THREE.PlaneBufferGeometry(10,10,10);
-                        // var cube=new THREE.BoxBufferGeometry(10,10,10);
 
                         var fire=new THREE.Fire(plane,{
                             textureWidth:512,
                             textureHeight:512,
                             debug:false
                         });
-                        fire.position.set(this.position.x,this.position.y-4,this.position.z) ;
+                        fire.position.set(redBoxes[redBoxIter].position.x,redBoxes[redBoxIter].position.y-4,redBoxes[redBoxIter].position.z) ;
                         fire.addSource(0.5,0.1,0.1,1.0,0.0,1.0);
                         fire.rotateX(Math.PI);
                         scene.add(fire);
-                        setTimeout("scene.remove(fire)",2000);
+                        var redBoxIter1 =redBoxIter;
+                        redBoxIter = (redBoxIter + 1) % 4;
+                        randNode = possiblePosition[computeManager.randInt(0,possiblePosition.length - 1)];
+                        redBoxes[redBoxIter1].position.set(randNode.x,randNode.y,90);
+
                         this.position.set(spaceshipGroup.position.x,spaceshipGroup.position.y,spaceshipGroup.position.z);
                         move=false;
                     }
@@ -820,6 +885,8 @@ function InitializeScene(){
                 this.add(rocket);
             }
         };
+
+
     }
 
     function InitializeGamePlay1(){
@@ -923,10 +990,20 @@ function InitializeScene(){
                 sceneManager.loadScene("main_menu");
             }
             this.speed += computeManager.deltaTime/10;
+            if(inputManager.accelerate){
+                inputManager.accelerate = false;
+                this.speed += 0.4;
+            }
+            if(inputManager.slowdown && this.speed > 0){
+                inputManager.slowdown = false;
+                this.speed -= 0.8;
+            }
             camera.position.set(Math.sin(spaceshipGroup.position.x/10) * 2,Math.sin(spaceshipGroup.position.y/10) * 2 + 5   ,-20);
             camera.lookAt(0,0,0);
             this.distance += computeManager.deltaTime;
-            this.scoreBoard.innerHTML = "Score : " + this.distance.toFixed(2) + " X " + this.speed.toFixed(2) + " = " + (this.distance*this.speed).toFixed(2).toString();
+            this.scoreBoard.innerHTML = "Score : " + this.distance.toFixed(2) + " X "
+                + this.speed.toFixed(2) + " = " + (this.distance*this.speed).toFixed(2).toString()+
+                "<br/><img src='images/speed.png' width=\"25px\" height=\"25px\"> <hr/> Speed:"+this.speed.toFixed(2);
         };
     }
     InitializeMainMenu();
@@ -976,7 +1053,40 @@ function InitializeInput(){
             spaceshipGroup.launch(1);
             uiManager.hideMenu();
         });
+        $("#scene_btn").click(function (e) {
+            var ext = ".jpg";
+            var url;
+            var urls;
+            if(sceneIndex % 2 == 0) {
+                url = "img/cubemap/bkg1_";
+                urls = [
+                    url + "px" + ext,
+                    url + "nx" + ext,
+                    url + "py" + ext,
+                    url + "ny" + ext,
+                    url + "pz" + ext,
+                    url + "nz" + ext
+                ];
+            }else{
+                url = "img/cubemap/dark-s_";
 
+                urls = [
+                    url + "px" + ext,
+                    url + "nx" + ext,
+                    url + "py" + ext,
+                    url + "ny" + ext,
+                    url + "pz" + ext,
+                    url + "nz" + ext
+                ];
+            }
+            function OnLoad(res){
+                res.format = THREE.RGBFormat;
+                assetManager.cubeMap = res;
+            }
+            assetManager.cubeMap= new THREE.CubeTextureLoader(loadManager).load(urls,OnLoad);
+            activeScene.background = assetManager.cubeMap;
+            sceneIndex = sceneIndex + 1;
+        });
 
         $("#switch_btn").click(function (e) {
             var spaceshipMaterial = activeScene.getObjectByName("spaceship_group");
@@ -1019,6 +1129,15 @@ function InitializeInput(){
             }
             musicIndex = musicIndex+1;
         });
+        $("#help_btn").click(function (e) {
+            if(helpindex%2 === 0){
+                document.getElementById("help").style.visibility = "visible";
+            }
+            else{
+                document.getElementById("help").style.visibility = "hidden";
+            }
+            helpindex = helpindex + 1;
+        });
         $("#easy").click(function (e) {
             var spaceshipMaterial = activeScene.getObjectByName("spaceship_group");
             spaceshipMaterial.scale.set(0.005,0.005,0.005);
@@ -1030,6 +1149,7 @@ function InitializeInput(){
         $("#normal").click(function (e) {
             var spaceshipMaterial = activeScene.getObjectByName("spaceship_group");
             spaceshipMaterial.scale.set(0.01,0.01,0.01);
+            gamesize = 1.0;
             this.style.background = "#00ACED";
             document.getElementById("easy").style.background = "#fff";
             document.getElementById("hard").style.background = "#fff";

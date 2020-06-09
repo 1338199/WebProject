@@ -103,6 +103,15 @@ body {
     text-align: center;
 }
 
+#gameplay_menu2{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    text-align: center;
+}
+
 #gameplay_menu #play_score{
     background-color: #000;
     color: #fff;
@@ -120,6 +129,15 @@ body {
     margin-top: 2.5vh;
     display: inline-block;
 }
+
+#gameplay_menu2 #play_score2{
+    background-color: #000;
+    color: #fff;
+    padding: 10px;
+    font-size: 12px;
+    margin-top: 2.5vh;
+    display: inline-block;
+}
 .transitioned{
     transition-duration: 0.45s;
     transition-timing-function: ease-out;
@@ -128,4 +146,12 @@ body {
 .hide{
     pointer-events: none;
     opacity: 0 !important;
+}
+
+#help{
+    border: white solid 3px;
+    border-radius: 4px;
+    float: right;
+    color: #fff;
+    visibility: hidden;
 }

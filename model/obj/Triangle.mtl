@@ -1,0 +1,26 @@
+newmtl TriangleUFO:Hull
+illum 4
+Kd 0.64 0.64 0.64
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Ka Hull.png
+map_Kd Hull.png
+Ni 1.00
+Ks 0.50 0.50 0.50
+Ns 96.08
+newmtl TriangleUFO:LightCenter
+illum 4
+Kd 0.64 0.64 0.64
+Ka 1.00 1.00 1.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+Ks 0.50 0.50 0.50
+Ns 96.08
+newmtl TriangleUFO:Lights
+illum 4
+Kd 0.64 0.64 0.64
+Ka 1.00 1.00 1.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+Ks 0.50 0.50 0.50
+Ns 96.08
