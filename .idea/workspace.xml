@@ -2,25 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1d2a0bf1-ff3f-4f6f-8ca6-8e320b20e343" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/images/bg.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/images/speed.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/img/cubemap/bkg1_nx.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/img/cubemap/bkg1_ny.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/img/cubemap/bkg1_nz.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/img/cubemap/bkg1_px.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/img/cubemap/bkg1_py.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/img/cubemap/bkg1_pz.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/js/STLLoader.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/model/aim.STL" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/model/obj/Hull.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/model/obj/Triangle.mtl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/model/obj/Triangle.obj" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/model/obj/TriangleUFO.mtl" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/model/obj/TriangleUFO.obj" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/10038.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/10038.jpg_normalmap.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/3968.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/model/textures/316.02.20.jpg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/demo.css" beforeDir="false" afterPath="$PROJECT_DIR$/demo.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/demo.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/demo.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/rocket.mtl" beforeDir="false" afterPath="$PROJECT_DIR$/model/rocket.mtl" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/rocket1.mtl" beforeDir="false" afterPath="$PROJECT_DIR$/model/rocket1.mtl" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -89,7 +79,8 @@
       <workItem from="1591001735932" duration="251000" />
       <workItem from="1591518166591" duration="521000" />
       <workItem from="1591618740405" duration="2072000" />
-      <workItem from="1591664730416" duration="16340000" />
+      <workItem from="1591664730416" duration="16446000" />
+      <workItem from="1591772314861" duration="12658000" />
     </task>
     <task id="LOCAL-00001" summary="update">
       <created>1591629968180</created>
@@ -98,7 +89,14 @@
       <option name="project" value="LOCAL" />
       <updated>1591629968180</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="update">
+      <created>1591716166757</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1591716166757</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -122,10 +120,10 @@
       <screen x="0" y="0" width="1440" height="900" />
     </state>
     <state x="461" y="293" key="#com.intellij.ide.actions.ChooseComponentsToExportDialog/0.0.1440.900@0.0.1440.900" timestamp="1589788004889" />
-    <state x="303" y="52" key="CommitChangelistDialog2" timestamp="1591629967919">
+    <state x="303" y="52" key="CommitChangelistDialog2" timestamp="1591716166344">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="303" y="52" key="CommitChangelistDialog2/0.0.1440.900@0.0.1440.900" timestamp="1591629967919" />
+    <state x="303" y="52" key="CommitChangelistDialog2/0.0.1440.900@0.0.1440.900" timestamp="1591716166344" />
     <state x="385" y="196" width="670" height="676" key="search.everywhere.popup" timestamp="1589960994600">
       <screen x="0" y="0" width="1440" height="900" />
     </state>

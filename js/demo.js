@@ -390,14 +390,14 @@ function loadRocket() {
         OBJLoader.load('model/rocket.obj', function(res) {
             var hitBoxPosition = [
                 new THREE.Vector3(0,-1.5,0), 4,
-                new THREE.Vector3(1.5,-1.75,0.5), 2,
-                new THREE.Vector3(-1.5,-1.75,0.5), 2,
-                new THREE.Vector3(1.5,-1.75,-0.5), 2,
-                new THREE.Vector3(-1.5,-1.75,-0.5), 2,
-                new THREE.Vector3(3.75,-0.5,0), 2,
-                new THREE.Vector3(-3.75,-0.5,0), 2,
-                new THREE.Vector3(5,0.5,0), 2,
-                new THREE.Vector3(-5,0.5,0), 2,
+                new THREE.Vector3(1.5,-1.75,0.5), 4,
+                new THREE.Vector3(-1.5,-1.75,0.5), 4,
+                new THREE.Vector3(1.5,-1.75,-0.5), 4,
+                new THREE.Vector3(-1.5,-1.75,-0.5), 4,
+                new THREE.Vector3(3.75,-0.5,0), 4,
+                new THREE.Vector3(-3.75,-0.5,0), 4,
+                new THREE.Vector3(5,0.5,0), 4,
+                new THREE.Vector3(-5,0.5,0), 4,
             ];
             res.hitBoxes = new Array();
             for(var i=0;i<9;i++){
@@ -462,13 +462,13 @@ function Update(currentFrame){
     computeManager.firstFrame = currentFrame;
 
     var currentScene = activeScene;
-    if(currentScene != undefined && currentScene.isReady){
+    if(currentScene !== undefined && currentScene.isReady){
         try{
             currentScene.traverse(function(child){
-                if(child.frameUpdate != undefined){
+                if(child.frameUpdate !== undefined){
                     child.frameUpdate();
                 }
-                if(child.mixer != undefined){
+                if(child.mixer !== undefined){
                     child.mixer.update(computeManager.deltaTime);
                 }
             });
@@ -575,19 +575,6 @@ function InitializeScene(){
                 this.position.set(11,-5,0);
             };
 
-            // var aim = assetManager.objects['aim'];
-            // console.log(aim);
-            // aim.scale.set(0.1,0.1,0.1);
-            // aim.position.set(8,0,0);
-            // aim.rotateX(3*Math.PI/2);
-            // // aim.rotateY(Math.PI/2);
-            // console.log(aim);
-            // // aim.material.color = "0xff0000";
-            // scene.add(aim);
-
-
-                // mesh.castShadow = true;
-                // mesh.receiveShadow = true;
             spaceshipGroup.awake = function () {
                 this.isLaunched = false;
                 this.isAssembled = false;
@@ -611,8 +598,11 @@ function InitializeScene(){
                         if(i === 1){
                             sceneManager.loadScene("game_play1");
                         }
-                        else {
+                        else if(i === 2){
                             sceneManager.loadScene("game_play");
+                        }
+                        else{
+                            sceneManager.loadScene("game_play2");
                         }
                     }, 2000);
                 }, 3000);
@@ -667,6 +657,7 @@ function InitializeScene(){
 
     function InitializeGamePlay(){
         var scene = new THREE.Scene();
+        var collide = false;
         scene.name = "game_play";
         sceneManager.addScene(scene);
         var redBoxIter = 0;
@@ -735,13 +726,15 @@ function InitializeScene(){
                 var diffPos = new THREE.Vector2(this.position.x - -10*inputManager.position.x,this.position.y - -10*inputManager.position.y);
                 this.position.set(this.position.x - diffPos.x * computeManager.deltaTime * scene.speed, this.position.y - diffPos.y * computeManager.deltaTime * scene.speed,0);
                 this.rotation.set(0,0,(this.rotation.z - (this.rotation.z - -inputManager.position.x) * scene.speed * computeManager.deltaTime));
-                if(this.children[0].isColliding(redBoxes[redBoxIter])){
-                    var currentHighscore = (localStorage.highScore !== undefined) ? parseFloat(localStorage.highScore) : 0;
-                    var currentScore = scene.speed * scene.distance;
-                    if(currentHighscore < currentScore){
-                        localStorage.highScore = currentScore;
+                for(var i = 0; i < 4;i++) {
+                    if (this.children[0].isColliding(redBoxes[i])) {
+                        var currentHighscore = (localStorage.highScore !== undefined) ? parseFloat(localStorage.highScore) : 0;
+                        var currentScore = scene.speed * scene.distance;
+                        if (currentHighscore < currentScore) {
+                            localStorage.highScore = currentScore;
+                        }
+                        sceneManager.loadScene("main_menu");
                     }
-                    sceneManager.loadScene("main_menu");
                 }
             };
 
@@ -815,8 +808,6 @@ function InitializeScene(){
                 sceneManager.loadScene("main_menu");
             }
             scene.traverse(function(obj) {
-                // console.log(scene);
-                // console.log(this.sceneManager.scenes['game_play']);
                 if (obj.type === "Fire") {
                     setTimeout(function(){
                         scene.remove(obj);
@@ -840,12 +831,12 @@ function InitializeScene(){
                 "<br/><img src='images/speed.png' width=\"25px\" height=\"25px\"> <hr/> Speed:"+this.speed.toFixed(2);
             if(inputManager.shoot){
                 audio1.play();
-
+                collide = true;
 
                 var move =true;
                 inputManager.shoot = false;
                 rocket.castShadow = true;
-                this.scale.set(1, 1, 1);
+                rocket.scale.set(2, 2, 2);
                 rocket.position.set(spaceshipGroup.position.x,spaceshipGroup.position.y,spaceshipGroup.position.z);
                 rocket.awake = rocket.frameUpdate = undefined;
                 rocket.awake = function () {
@@ -858,29 +849,30 @@ function InitializeScene(){
                     else{
                         this.position.set(spaceshipGroup.position.x,spaceshipGroup.position.y,spaceshipGroup.position.z);
                     }
-                    //this.isColliding(redBoxes[redBoxIter])
-                    //this.position.distanceTo(redBoxes[redBoxIter].position)<6 && redBoxes[redBoxIter].position.z>6
-                    if(this.position.distanceTo(redBoxes[redBoxIter].position)<7 && redBoxes[redBoxIter].position.z>4){
-                        audio2.play();
-                        var plane=new THREE.PlaneBufferGeometry(10,10,10);
+                    for(var i = 0;i < 4;i++){
+                        if(this.position.distanceTo(redBoxes[i].position)<3 && collide){
+                            audio2.play();
+                            var plane=new THREE.PlaneBufferGeometry(10,10,10);
 
-                        var fire=new THREE.Fire(plane,{
-                            textureWidth:512,
-                            textureHeight:512,
-                            debug:false
-                        });
-                        fire.position.set(redBoxes[redBoxIter].position.x,redBoxes[redBoxIter].position.y-4,redBoxes[redBoxIter].position.z) ;
-                        fire.addSource(0.5,0.1,0.1,1.0,0.0,1.0);
-                        fire.rotateX(Math.PI);
-                        scene.add(fire);
-                        var redBoxIter1 =redBoxIter;
-                        redBoxIter = (redBoxIter + 1) % 4;
-                        randNode = possiblePosition[computeManager.randInt(0,possiblePosition.length - 1)];
-                        redBoxes[redBoxIter1].position.set(randNode.x,randNode.y,90);
+                            var fire=new THREE.Fire(plane,{
+                                textureWidth:512,
+                                textureHeight:512,
+                                debug:false
+                            });
+                            fire.position.set(redBoxes[i].position.x,redBoxes[i].position.y-4,redBoxes[i].position.z) ;
+                            fire.addSource(0.5,0.1,0.1,1.0,0.0,1.0);
+                            fire.rotateX(Math.PI);
+                            scene.add(fire);
+                            redBoxIter = (redBoxIter + 1) % 4;
+                            randNode = possiblePosition[computeManager.randInt(0,possiblePosition.length - 1)];
+                            redBoxes[i].position.set(randNode.x,randNode.y,90);
 
-                        this.position.set(spaceshipGroup.position.x,spaceshipGroup.position.y,spaceshipGroup.position.z);
-                        move=false;
+                            this.position.set(spaceshipGroup.position.x,spaceshipGroup.position.y,spaceshipGroup.position.z);
+                            collide = false;
+                            move=false;
+                        }
                     }
+
                 };
                 this.add(rocket);
             }
@@ -903,7 +895,7 @@ function InitializeScene(){
         scene1.awake = function () {
             uiManager.showMenu("gameplay_menu1");
             this.background = assetManager.cubeMap;
-            this.scoreBoard = uiManager.menus["gameplay_menu1"].scoreBoard1;
+            this.scoreBoard1 = uiManager.menus["gameplay_menu1"].scoreBoard1;
 
             var hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 1);
             this.add(hemiLight);
@@ -926,13 +918,15 @@ function InitializeScene(){
                 var diffPos = new THREE.Vector2(this.position.x - -10*inputManager.position.x,this.position.y - -10*inputManager.position.y);
                 this.position.set(this.position.x - diffPos.x * computeManager.deltaTime * scene1.speed, this.position.y - diffPos.y * computeManager.deltaTime * scene1.speed,0);
                 this.rotation.set(0,0,(this.rotation.z - (this.rotation.z - -inputManager.position.x) * scene1.speed * computeManager.deltaTime));
-                if(this.children[0].isColliding(rocketBoxes[redBoxIter])){
-                    var currentHighscore1 = (localStorage.highScore1 !== undefined) ? parseFloat(localStorage.highScore1) : 0;
-                    var currentScore1 = scene1.speed * scene1.distance;
-                    if(currentHighscore1 < currentScore1){
-                        localStorage.highScore1 = currentScore1;
+                for(var i = 0;i < 4;i++) {
+                    if (this.children[0].isColliding(rocketBoxes[i])) {
+                        var currentHighscore1 = (localStorage.highScore1 !== undefined) ? parseFloat(localStorage.highScore1) : 0;
+                        var currentScore1 = scene1.speed * scene1.distance;
+                        if (currentHighscore1 < currentScore1) {
+                            localStorage.highScore1 = currentScore1;
+                        }
+                        sceneManager.loadScene("main_menu");
                     }
-                    sceneManager.loadScene("main_menu");
                 }
             };
 
@@ -1001,14 +995,238 @@ function InitializeScene(){
             camera.position.set(Math.sin(spaceshipGroup.position.x/10) * 2,Math.sin(spaceshipGroup.position.y/10) * 2 + 5   ,-20);
             camera.lookAt(0,0,0);
             this.distance += computeManager.deltaTime;
-            this.scoreBoard.innerHTML = "Score : " + this.distance.toFixed(2) + " X "
+            this.scoreBoard1.innerHTML = "Score : " + this.distance.toFixed(2) + " X "
                 + this.speed.toFixed(2) + " = " + (this.distance*this.speed).toFixed(2).toString()+
                 "<br/><img src='images/speed.png' width=\"25px\" height=\"25px\"> <hr/> Speed:"+this.speed.toFixed(2);
+        };
+    }
+
+    function InitializeGamePlay2(){
+        var scene2 = new THREE.Scene();
+        var collide = false;
+        scene2.name = "game_play";
+        sceneManager.addScene(scene2);
+        var redBoxIter = 0;
+        var redBoxes = new Array();
+        var rocket = assetManager.objects["rocket"];
+        var spaceshipGroup;
+        var randNode;
+        var possiblePosition = new Array();
+        // 非位置音频可用于不考虑位置的背景音乐
+        // 创建一个监听者
+        var listener = new THREE.AudioListener();
+        // camera.add( listener );
+        // 创建一个非位置音频对象  用来控制播放
+        var audio2 = new THREE.Audio(listener);
+        // 创建一个音频加载器对象
+        var audioLoader = new THREE.AudioLoader();
+        // 加载音频文件，返回一个音频缓冲区对象作为回调函数参数
+        audioLoader.load('audios/shoot.mp3', function(AudioBuffer) {
+            // 音频缓冲区对象关联到音频对象audio
+            audio2.setBuffer(AudioBuffer);
+            audio2.setLoop(false); //是否循环
+            audio2.setVolume(0.5); //音量
+            // 播放缓冲区中的音频数据
+        });
+
+        var listener2 = new THREE.AudioListener();
+        // camera.add( listener );
+        // 创建一个非位置音频对象  用来控制播放
+        var audio3 = new THREE.Audio(listener2);
+        // 创建一个音频加载器对象
+        var audioLoader2 = new THREE.AudioLoader();
+        // 加载音频文件，返回一个音频缓冲区对象作为回调函数参数
+        audioLoader2.load('audios/explode.mp3', function(AudioBuffer) {
+            // 音频缓冲区对象关联到音频对象audio
+            audio3.setBuffer(AudioBuffer);
+            audio3.setLoop(false); //是否循环
+            audio3.setVolume(0.5); //音量
+            // 播放缓冲区中的音频数据
+        });
+
+        scene2.awake = function () {
+            uiManager.showMenu("gameplay_menu2");
+
+
+            this.background = assetManager.cubeMap;
+            this.scoreBoard2 = uiManager.menus["gameplay_menu2"].scoreBoard2;
+
+            var hemiLight = new THREE.HemisphereLight(0xffffff, 0xffffff, 1);
+            this.add(hemiLight);
+            var directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+            directionalLight.castShadow = true;
+            directionalLight.position.set(0,10,-10);
+            this.add(directionalLight);
+
+
+            spaceshipGroup = new THREE.Group();
+            spaceshipGroup.name = "spaceship_group";
+            var spaceship = assetManager.objects["spaceship"];
+            spaceshipGroup.add(spaceship);
+
+            spaceshipGroup.awake = function () {
+                this.scale.set(0.01*gamesize, 0.01*gamesize, 0.01*gamesize);
+            };
+
+            spaceshipGroup.frameUpdate = function () {
+                var diffPos = new THREE.Vector2(this.position.x - -10*inputManager.position.x,this.position.y - -10*inputManager.position.y);
+                this.position.set(this.position.x - diffPos.x * computeManager.deltaTime * scene2.speed, this.position.y - diffPos.y * computeManager.deltaTime * scene2.speed,0);
+                this.rotation.set(0,0,(this.rotation.z - (this.rotation.z - -inputManager.position.x) * scene2.speed * computeManager.deltaTime));
+                for(var i = 0; i < 4;i++) {
+                    if (this.children[0].isColliding(redBoxes[i])) {
+                        var currentHighscore2 = (localStorage.highScore2 !== undefined) ? parseFloat(localStorage.highScore2) : 0;
+                        var currentScore2 = scene2.speed * scene2.distance;
+                        if (currentHighscore2 < currentScore2) {
+                            localStorage.highScore2 = currentScore2;
+                        }
+                        sceneManager.loadScene("main_menu");
+                    }
+                }
+            };
+
+            directionalLight.target = spaceshipGroup;
+            directionalLight.shadow.camera.left = -assetManager.cameraSize;
+            directionalLight.shadow.camera.right = assetManager.cameraSize;
+            directionalLight.shadow.camera.top = assetManager.cameraSize;
+            directionalLight.shadow.camera.bottom = -assetManager.cameraSize;
+            directionalLight.shadow.mapSize.width = assetManager.shadowSize;
+            directionalLight.shadow.mapSize.height = assetManager.shadowSize;
+            this.add(spaceshipGroup);
+
+            var aim = assetManager.objects['aim'];
+            aim.awake = function(){
+                this.scale.set(0.3,0.3,0.3);
+                this.position.set(spaceshipGroup.position.x,spaceshipGroup.position.y,90);
+            };
+            aim.frameUpdate = function () {
+                this.position.set(spaceshipGroup.position.x,spaceshipGroup.position.y,50);
+            };
+            this.add(aim);
+
+
+
+            this.add(aim);
+
+            for(var x=-1;x<2;x++){
+                for(var y=-1;y<2;y++){
+                    possiblePosition.push(new THREE.Vector2(x*5,y*5));
+                }
+            }
+
+
+            for(var i=0;i<4;i++){
+                var redBox = assetManager.objects["rocket"+i.toString()];
+                redBoxes.push(redBox);
+                redBox.castShadow = true;
+                redBox.scale.set(2,2,2);
+                redBox.position.set(0,0,-1000);
+                redBox.rotation.set(0,0,0);
+                redBox.awake = redBox.start = redBox.frameUpdate = undefined;
+                let zDistance = i;
+                redBox.awake = function () {
+                    var randNode = possiblePosition[computeManager.randInt(0,possiblePosition.length - 1)];
+                    this.position.set(randNode.x,randNode.y,30*(zDistance+1));
+                };
+                redBox.frameUpdate = function () {
+                    this.translateZ(-computeManager.deltaTime*10*scene2.speed);
+                    if(this.position.z < -30){
+                        redBoxIter = (redBoxIter + 1) % 4;
+                        randNode = possiblePosition[computeManager.randInt(0,possiblePosition.length - 1)];
+                        this.position.set(randNode.x,randNode.y,90);
+                    }
+                };
+                this.add(redBox);
+            }
+        };
+
+        scene2.start = function () {
+            camera.position.set(0,0,10);
+            this.distance = 0;
+            this.speed = 1;
+        };
+
+
+
+        scene2.frameUpdate = function () {
+            if(inputManager.exits){
+                inputManager.exits = false;
+                sceneManager.loadScene("main_menu");
+            }
+            scene2.traverse(function(obj) {
+                if (obj.type === "Fire") {
+                    setTimeout(function(){
+                        scene2.remove(obj);
+                    },600);
+                }
+            });
+            this.speed += computeManager.deltaTime/10;
+            if(inputManager.accelerate){
+                inputManager.accelerate = false;
+                this.speed += 0.4;
+            }
+            if(inputManager.slowdown && this.speed > 0){
+                inputManager.slowdown = false;
+                this.speed -= 0.8;
+            }
+            camera.position.set(Math.sin(spaceshipGroup.position.x/10) * 2,Math.sin(spaceshipGroup.position.y/10) * 2 + 5   ,-20);
+            camera.lookAt(0,0,0);
+            this.distance += computeManager.deltaTime;
+            this.scoreBoard2.innerHTML = "Score : " + this.distance.toFixed(2) + " X " +
+                this.speed.toFixed(2) + " = " + (this.distance*this.speed).toFixed(2).toString()+
+                "<br/><img src='images/speed.png' width=\"25px\" height=\"25px\"> <hr/> Speed:"+this.speed.toFixed(2);
+            if(inputManager.shoot){
+                audio2.play();
+                collide = true;
+
+                var move =true;
+                inputManager.shoot = false;
+                rocket.castShadow = true;
+                rocket.scale.set(2, 2, 2);
+                rocket.position.set(spaceshipGroup.position.x,spaceshipGroup.position.y,spaceshipGroup.position.z);
+                rocket.awake = rocket.frameUpdate = undefined;
+                rocket.awake = function () {
+                    this.position.set(spaceshipGroup.position.x,spaceshipGroup.position.y,spaceshipGroup.position.z);
+                };
+                rocket.frameUpdate = function () {
+                    if(move) {
+                        this.translateZ(computeManager.deltaTime * 10 * scene2.speed);
+                    }
+                    else{
+                        this.position.set(spaceshipGroup.position.x,spaceshipGroup.position.y,spaceshipGroup.position.z);
+                    }
+                    for(var i = 0;i < 4;i++){
+                        if(this.position.distanceTo(redBoxes[i].position)<3 && collide){
+                            audio3.play();
+                            var plane=new THREE.PlaneBufferGeometry(10,10,10);
+
+                            var fire=new THREE.Fire(plane,{
+                                textureWidth:512,
+                                textureHeight:512,
+                                debug:false
+                            });
+                            fire.position.set(redBoxes[i].position.x,redBoxes[i].position.y-4,redBoxes[i].position.z) ;
+                            fire.addSource(0.5,0.1,0.1,1.0,0.0,1.0);
+                            fire.rotateX(Math.PI);
+                            scene2.add(fire);
+                            redBoxIter = (redBoxIter + 1) % 4;
+                            randNode = possiblePosition[computeManager.randInt(0,possiblePosition.length - 1)];
+                            redBoxes[i].position.set(randNode.x,randNode.y,90);
+
+                            this.position.set(spaceshipGroup.position.x,spaceshipGroup.position.y,spaceshipGroup.position.z);
+                            collide = false;
+                            move=false;
+                        }
+                    }
+
+                };
+                this.add(rocket);
+            }
         };
     }
     InitializeMainMenu();
     InitializeGamePlay();
     InitializeGamePlay1();
+    InitializeGamePlay2();
 
     sceneManager.loadScene("main_menu");
 
@@ -1053,11 +1271,17 @@ function InitializeInput(){
             spaceshipGroup.launch(1);
             uiManager.hideMenu();
         });
+        var playBtn2 = $("#play_btn2");
+        playBtn2.click(function (e) {
+            var spaceshipGroup = activeScene.getObjectByName("spaceship_group");
+            spaceshipGroup.launch(2);
+            uiManager.hideMenu();
+        });
         $("#scene_btn").click(function (e) {
             var ext = ".jpg";
             var url;
             var urls;
-            if(sceneIndex % 2 == 0) {
+            if(sceneIndex % 2 === 0) {
                 url = "img/cubemap/bkg1_";
                 urls = [
                     url + "px" + ext,
@@ -1167,10 +1391,13 @@ function InitializeInput(){
     function GameplayMenu(){
         var scoreBoard = $(uiManager.menus["gameplay_menu"]).find("#play_score")[0];
         var scoreBoard1 = $(uiManager.menus["gameplay_menu1"]).find("#play_score1")[0];
+        var scoreBoard2 = $(uiManager.menus["gameplay_menu2"]).find("#play_score2")[0];
         uiManager.menus["gameplay_menu"].scoreBoard = scoreBoard;
         uiManager.menus["gameplay_menu1"].scoreBoard1 = scoreBoard1;
+        uiManager.menus["gameplay_menu2"].scoreBoard2 = scoreBoard2;
         scoreBoard.innerHTML = "Initializing...";
         scoreBoard1.innerHTML = "Initializing...";
+        scoreBoard2.innerHTML = "Initializing...";
     }
 
     MainMenu();
