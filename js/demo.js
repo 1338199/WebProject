@@ -13,6 +13,7 @@ var musicIndex = 0;
 var helpindex = 0;
 var gamesize = 1;
 var sceneIndex = 0;
+var turned = false;
 window.onload = Initialize;
 window.onresize = AdaptWindow;
 
@@ -62,6 +63,8 @@ function InitializeSceneManager(){
             setTimeout(function(){
                 //get the scene from scenes using its name
                 activeScene = sceneManager.scenes[name];
+                console.log(activeScene);
+                console.log(sceneManager);
                 //start the game after 1s
                 setTimeout(function () {
                     Start();
@@ -333,6 +336,8 @@ function Prepare(){
 
     loadRocket();
 
+    loadEnemy();
+
     requestAnimationFrame(Update);
 }
 
@@ -378,6 +383,19 @@ function loadAim() {
     });
 }
 
+function loadEnemy(){
+    var OBJLoader = new THREE.OBJLoader();//obj加载器
+    var MTLLoader = new THREE.MTLLoader();//材质文件加载器
+    MTLLoader.load('model/Free_SciFi-Fighter/SciFi_Fighter_AK5.mtl', function(materials) {
+        // 返回一个包含材质的对象MaterialCreator
+        //obj的模型会和MaterialCreator包含的材质对应起来
+        OBJLoader.setMaterials(materials);
+        OBJLoader.load('model/Free_SciFi-Fighter/SciFi_Fighter_AK5.obj', function(obj) {
+            obj.name = "enemy";
+            assetManager.addObject(obj);
+        })
+    });
+}
 
 function loadRocket() {
     var OBJLoader = new THREE.OBJLoader();
@@ -390,14 +408,14 @@ function loadRocket() {
         OBJLoader.load('model/rocket.obj', function(res) {
             var hitBoxPosition = [
                 new THREE.Vector3(0,-1.5,0), 4,
-                new THREE.Vector3(1.5,-1.75,0.5), 4,
-                new THREE.Vector3(-1.5,-1.75,0.5), 4,
-                new THREE.Vector3(1.5,-1.75,-0.5), 4,
-                new THREE.Vector3(-1.5,-1.75,-0.5), 4,
-                new THREE.Vector3(3.75,-0.5,0), 4,
-                new THREE.Vector3(-3.75,-0.5,0), 4,
-                new THREE.Vector3(5,0.5,0), 4,
-                new THREE.Vector3(-5,0.5,0), 4,
+                new THREE.Vector3(1.5,-1.75,0.5), 2,
+                new THREE.Vector3(-1.5,-1.75,0.5), 2,
+                new THREE.Vector3(1.5,-1.75,-0.5), 2,
+                new THREE.Vector3(-1.5,-1.75,-0.5), 2,
+                new THREE.Vector3(3.75,-0.5,0), 2,
+                new THREE.Vector3(-3.75,-0.5,0), 2,
+                new THREE.Vector3(5,0.5,0), 2,
+                new THREE.Vector3(-5,0.5,0), 2,
             ];
             res.hitBoxes = new Array();
             for(var i=0;i<9;i++){
@@ -482,6 +500,7 @@ function Update(currentFrame){
 
 function InitializeScene(){
     //Default scene
+    var Enemy = assetManager.objects['enemy'];
     function InitializeMainMenu(){
         var scene = new THREE.Scene();
         scene.name = "main_menu";
@@ -514,6 +533,18 @@ function InitializeScene(){
             scene.add(spaceshipGroup);
 
             scene.background = assetManager.cubeMap;
+
+
+
+            Enemy.scale.set(0.003,0.003,0.003);
+            Enemy.position.set(0,0,-15);
+            Enemy.frameUpdate = function(){
+                this.scale.set(0.003,0.003,0.003);
+                this.rotation.set(0,0,0);
+                this.position.set(0,0,-15);
+            };
+
+            scene.add(Enemy);
 
             var rocks = new Array();
             for(var i=0;i<4;i++){
@@ -599,10 +630,10 @@ function InitializeScene(){
                             sceneManager.loadScene("game_play1");
                         }
                         else if(i === 2){
-                            sceneManager.loadScene("game_play");
+                            sceneManager.loadScene("game_play2");
                         }
                         else{
-                            sceneManager.loadScene("game_play2");
+                            sceneManager.loadScene("game_play");
                         }
                     }, 2000);
                 }, 3000);
@@ -975,6 +1006,7 @@ function InitializeScene(){
             camera.position.set(0,0,10);
             this.distance = 0;
             this.speed = 1;
+
         };
 
 
@@ -1004,13 +1036,18 @@ function InitializeScene(){
     function InitializeGamePlay2(){
         var scene2 = new THREE.Scene();
         var collide = false;
-        scene2.name = "game_play";
+        scene2.name = "game_play2";
         sceneManager.addScene(scene2);
         var redBoxIter = 0;
+        var rockIter = 0;
         var redBoxes = new Array();
+        var rockBoxes = new Array();
+        var rockNum = 0;
         var rocket = assetManager.objects["rocket"];
+        var Enemy = assetManager.objects['enemy'];
         var spaceshipGroup;
-        var randNode;
+        var youlife = 3;
+        var enemylife = 1;
         var possiblePosition = new Array();
         // 非位置音频可用于不考虑位置的背景音乐
         // 创建一个监听者
@@ -1044,6 +1081,36 @@ function InitializeScene(){
             // 播放缓冲区中的音频数据
         });
 
+        var listener3 = new THREE.AudioListener();
+        // camera.add( listener );
+        // 创建一个非位置音频对象  用来控制播放
+        var audio4 = new THREE.Audio(listener3);
+        // 创建一个音频加载器对象
+        var audioLoader3 = new THREE.AudioLoader();
+        // 加载音频文件，返回一个音频缓冲区对象作为回调函数参数
+        audioLoader3.load('audios/warn.mp3', function(AudioBuffer) {
+            // 音频缓冲区对象关联到音频对象audio
+            audio4.setBuffer(AudioBuffer);
+            audio4.setLoop(false); //是否循环
+            audio4.setVolume(0.5); //音量
+            // 播放缓冲区中的音频数据
+        });
+
+        var listener4 = new THREE.AudioListener();
+        // camera.add( listener );
+        // 创建一个非位置音频对象  用来控制播放
+        var audio5 = new THREE.Audio(listener4);
+        // 创建一个音频加载器对象
+        var audioLoader4 = new THREE.AudioLoader();
+        // 加载音频文件，返回一个音频缓冲区对象作为回调函数参数
+        audioLoader4.load('audios/add.mp3', function(AudioBuffer) {
+            // 音频缓冲区对象关联到音频对象audio
+            audio5.setBuffer(AudioBuffer);
+            audio5.setLoop(false); //是否循环
+            audio5.setVolume(0.5); //音量
+            // 播放缓冲区中的音频数据
+        });
+
         scene2.awake = function () {
             uiManager.showMenu("gameplay_menu2");
 
@@ -1074,12 +1141,20 @@ function InitializeScene(){
                 this.rotation.set(0,0,(this.rotation.z - (this.rotation.z - -inputManager.position.x) * scene2.speed * computeManager.deltaTime));
                 for(var i = 0; i < 4;i++) {
                     if (this.children[0].isColliding(redBoxes[i])) {
-                        var currentHighscore2 = (localStorage.highScore2 !== undefined) ? parseFloat(localStorage.highScore2) : 0;
-                        var currentScore2 = scene2.speed * scene2.distance;
-                        if (currentHighscore2 < currentScore2) {
-                            localStorage.highScore2 = currentScore2;
-                        }
-                        sceneManager.loadScene("main_menu");
+                        audio4.play();
+                        redBoxIter = (redBoxIter + 1) % 4;
+                        var randPos = Math.random()*30 -15;
+                        redBoxes[i].position.set(Enemy.position.x+randPos,Enemy.position.y+randPos,Enemy.position.z);
+                        youlife = youlife - 1;
+                    }
+                }
+                for(var j = 0; j < 2;j++) {
+                    if (this.children[0].isColliding(rockBoxes[j])) {
+                        audio4.play();
+                        rockIter = (rockIter + 1) % 2;
+                        var randNode1 = possiblePosition[computeManager.randInt(0,possiblePosition.length - 1)];
+                        rockBoxes[j].position.set(randNode1.x,randNode1.y,90);
+                        youlife = youlife - 1;
                     }
                 }
             };
@@ -1107,12 +1182,21 @@ function InitializeScene(){
 
             this.add(aim);
 
-            for(var x=-1;x<2;x++){
-                for(var y=-1;y<2;y++){
-                    possiblePosition.push(new THREE.Vector2(x*5,y*5));
+            Enemy.awake = function(){
+                Enemy.scale.set(0.01,0.01,0.01);
+                Enemy.position.set(0,0,90);
+                if(!turned){
+                    Enemy.rotateX(Math.PI);
+                    turned = true;
                 }
-            }
+            };
+            Enemy.frameUpdate = function () {
+                var diffPos = new THREE.Vector2(this.position.x - 1*spaceshipGroup.position.x,this.position.y -1*spaceshipGroup.position.y);
+                this.position.set(this.position.x - diffPos.x * computeManager.deltaTime * scene2.speed, this.position.y - diffPos.y * computeManager.deltaTime * scene2.speed,90);
+                this.rotation.set(0,0,(this.rotation.z - (this.rotation.z - spaceshipGroup.position.x) * scene2.speed * computeManager.deltaTime));
 
+            };
+            this.add(Enemy);
 
             for(var i=0;i<4;i++){
                 var redBox = assetManager.objects["rocket"+i.toString()];
@@ -1124,30 +1208,70 @@ function InitializeScene(){
                 redBox.awake = redBox.start = redBox.frameUpdate = undefined;
                 let zDistance = i;
                 redBox.awake = function () {
-                    var randNode = possiblePosition[computeManager.randInt(0,possiblePosition.length - 1)];
-                    this.position.set(randNode.x,randNode.y,30*(zDistance+1));
+                    var randPos = Math.random()*30 -15;
+                    this.position.set(Enemy.position.x+randPos,Enemy.position.y+randPos,Enemy.position.z);
                 };
                 redBox.frameUpdate = function () {
                     this.translateZ(-computeManager.deltaTime*10*scene2.speed);
                     if(this.position.z < -30){
                         redBoxIter = (redBoxIter + 1) % 4;
-                        randNode = possiblePosition[computeManager.randInt(0,possiblePosition.length - 1)];
-                        this.position.set(randNode.x,randNode.y,90);
+                        var randPos = Math.random()*30 -15;
+                        this.position.set(Enemy.position.x+randPos,Enemy.position.y+randPos,Enemy.position.z);
                     }
                 };
                 this.add(redBox);
+            }
+
+            for(var x=-1;x<2;x++){
+                for(var y=-1;y<2;y++){
+                    possiblePosition.push(new THREE.Vector2(x*3,y*3));
+                }
+            }
+
+            for(var j=0;j<2;j++){
+                var rock = assetManager.objects["rock"+j.toString()];
+                rockBoxes.push(rock);
+                rock.castShadow = true;
+                var size = Math.ceil(Math.random()*1);
+                rock.scale.set(0.001*size,0.001*size,0.001*size);
+                rock.position.set(0,0,-1000);
+                rock.rotation.set(0,0,0);
+                rock.awake = rock.start = rock.frameUpdate = undefined;
+                let zDistance = j;
+                rock.awake = function () {
+                    var randNode = possiblePosition[computeManager.randInt(0,possiblePosition.length - 1)];
+                    this.position.set(randNode.x,randNode.y,30*(zDistance+1));
+                };
+                rock.frameUpdate = function () {
+                    this.translateZ(-computeManager.deltaTime*10*scene2.speed);
+                    if(this.position.z < -30){
+                        rockIter = (rockIter + 1) % 2;
+                        var randNode = possiblePosition[computeManager.randInt(0,possiblePosition.length - 1)];
+                        this.position.set(randNode.x,randNode.y,90);
+                    }
+                };
+                this.add(rock);
             }
         };
 
         scene2.start = function () {
             camera.position.set(0,0,10);
             this.distance = 0;
-            this.speed = 1;
+            this.speed = 3;
         };
 
 
 
         scene2.frameUpdate = function () {
+            if(youlife === 0){
+                sceneManager.loadScene("main_menu");
+                youlife = 3;
+            }
+            if(enemylife === 0){
+                alert("Congratulations! You Win");
+                sceneManager.loadScene("main_menu");
+                enemylife = 1;
+            }
             if(inputManager.exits){
                 inputManager.exits = false;
                 sceneManager.loadScene("main_menu");
@@ -1171,9 +1295,17 @@ function InitializeScene(){
             camera.position.set(Math.sin(spaceshipGroup.position.x/10) * 2,Math.sin(spaceshipGroup.position.y/10) * 2 + 5   ,-20);
             camera.lookAt(0,0,0);
             this.distance += computeManager.deltaTime;
-            this.scoreBoard2.innerHTML = "Score : " + this.distance.toFixed(2) + " X " +
-                this.speed.toFixed(2) + " = " + (this.distance*this.speed).toFixed(2).toString()+
-                "<br/><img src='images/speed.png' width=\"25px\" height=\"25px\"> <hr/> Speed:"+this.speed.toFixed(2);
+            this.scoreBoard2.innerHTML = "Your Life(Left) Enemy Life(Right) " + "<hr/>";
+            for(var k = 0; k < youlife; k++){
+                this.scoreBoard2.innerHTML = this.scoreBoard2.innerHTML + "<img src='images/energy.png' width=\"15px\" height=\"15px\">";
+            }
+            this.scoreBoard2.innerHTML = this.scoreBoard2.innerHTML + "&nbsp;";
+            for(var m = 0; m < enemylife; m++){
+                this.scoreBoard2.innerHTML = this.scoreBoard2.innerHTML + "<img src='images/energy1.png' width=\"15px\" height=\"15px\">";
+            }
+            this.scoreBoard2.innerHTML = this.scoreBoard2.innerHTML +
+                "<br/><br/><img src='images/speed.png' width=\"25px\" height=\"25px\"> <hr/> Speed:"+this.speed.toFixed(2);
+            this.scoreBoard2.innerHTML = this.scoreBoard2.innerHTML + "<br/>You have hit " + rockNum.toString() + "rocks.";
             if(inputManager.shoot){
                 audio2.play();
                 collide = true;
@@ -1208,16 +1340,59 @@ function InitializeScene(){
                             fire.addSource(0.5,0.1,0.1,1.0,0.0,1.0);
                             fire.rotateX(Math.PI);
                             scene2.add(fire);
-                            redBoxIter = (redBoxIter + 1) % 4;
-                            randNode = possiblePosition[computeManager.randInt(0,possiblePosition.length - 1)];
-                            redBoxes[i].position.set(randNode.x,randNode.y,90);
+                            redBoxes[i].position.set(Enemy.position.x,Enemy.position.y,90);
 
                             this.position.set(spaceshipGroup.position.x,spaceshipGroup.position.y,spaceshipGroup.position.z);
                             collide = false;
                             move=false;
                         }
                     }
+                    for(var j = 0;j < 2;j++){
+                        if(this.position.distanceTo(rockBoxes[j].position)<3 && collide){
+                            rockNum = rockNum + 1;
+                            if(rockNum % 2 === 0 && youlife < 3){
+                                audio5.play();
+                                youlife = youlife + 1;
+                            }
+                            audio3.play();
+                            var plane1=new THREE.PlaneBufferGeometry(10,10,10);
 
+                            var fire1=new THREE.Fire(plane1,{
+                                textureWidth:512,
+                                textureHeight:512,
+                                debug:false
+                            });
+                            fire1.position.set(rockBoxes[j].position.x,rockBoxes[j].position.y-4,rockBoxes[j].position.z) ;
+                            fire1.addSource(0.5,0.1,0.1,1.0,0.0,1.0);
+                            fire1.rotateX(Math.PI);
+                            scene2.add(fire1);
+                            rockIter = (rockIter + 1) % 2;
+                            var randNode = possiblePosition[computeManager.randInt(0,possiblePosition.length - 1)];
+                            rockBoxes[j].position.set(randNode.x,randNode.y,90);
+
+                            this.position.set(spaceshipGroup.position.x,spaceshipGroup.position.y,spaceshipGroup.position.z);
+                            collide = false;
+                            move=false;
+                        }
+                    }
+                    if(this.position.distanceTo(Enemy.position)<15 && collide){
+                        audio3.play();
+                        enemylife = enemylife - 1;
+                        var plane2=new THREE.PlaneBufferGeometry(10,10,10);
+
+                        var fire2=new THREE.Fire(plane2,{
+                            textureWidth:512,
+                            textureHeight:512,
+                            debug:false
+                        });
+                        fire2.position.set(Enemy.position.x,Enemy.position.y-4,Enemy.position.z) ;
+                        fire2.addSource(0.5,0.1,0.1,1.0,0.0,1.0);
+                        fire2.rotateX(Math.PI);
+                        scene2.add(fire2);
+                        this.position.set(spaceshipGroup.position.x,spaceshipGroup.position.y,spaceshipGroup.position.z);
+                        collide = false;
+                        move=false;
+                    }
                 };
                 this.add(rocket);
             }
