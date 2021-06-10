@@ -535,7 +535,6 @@ function InitializeScene(){
             scene.background = assetManager.cubeMap;
 
 
-
             Enemy.scale.set(0.003,0.003,0.003);
             Enemy.position.set(0,0,-15);
             Enemy.frameUpdate = function(){
@@ -755,8 +754,10 @@ function InitializeScene(){
 
             spaceshipGroup.frameUpdate = function () {
                 var diffPos = new THREE.Vector2(this.position.x - -10*inputManager.position.x,this.position.y - -10*inputManager.position.y);
-                this.position.set(this.position.x - diffPos.x * computeManager.deltaTime * scene.speed, this.position.y - diffPos.y * computeManager.deltaTime * scene.speed,0);
-                this.rotation.set(0,0,(this.rotation.z - (this.rotation.z - -inputManager.position.x) * scene.speed * computeManager.deltaTime));
+                this.position.set(this.position.x - diffPos.x * computeManager.deltaTime * scene.speed,
+                    this.position.y - diffPos.y * computeManager.deltaTime * scene.speed,0);
+                this.rotation.set(0,0,(this.rotation.z -
+                    (this.rotation.z - -inputManager.position.x) * scene.speed * computeManager.deltaTime));
                 for(var i = 0; i < 4;i++) {
                     if (this.children[0].isColliding(redBoxes[i])) {
                         var currentHighscore = (localStorage.highScore !== undefined) ? parseFloat(localStorage.highScore) : 0;
@@ -1107,7 +1108,7 @@ function InitializeScene(){
             // 音频缓冲区对象关联到音频对象audio
             audio5.setBuffer(AudioBuffer);
             audio5.setLoop(false); //是否循环
-            audio5.setVolume(0.5); //音量
+            audio5.setVolume(1); //音量
             // 播放缓冲区中的音频数据
         });
 

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="38b788c5-9ea6-4a46-87e4-e0f36c174f6b" name="plane" url="http://192.168.50.249:3333/Demo/index.html?_ijt=nvirpcal6ieu4kclto7l37eq77">
+        <fileTransfer port="0" mountedRoot="" accessType="MOUNT" />
+      </webServer>
+    </option>
+  </component>
+</project>

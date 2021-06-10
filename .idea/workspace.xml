@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="1d2a0bf1-ff3f-4f6f-8ca6-8e320b20e343" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/audios/add.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/audios/warn.mp3" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/images/energy.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/images/energy1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/webServers.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/js/demo.js" beforeDir="false" afterPath="$PROJECT_DIR$/js/demo.js" afterDir="false" />
@@ -49,6 +47,7 @@
     <property name="node.js.path.for.package.tslint" value="project" />
     <property name="node.js.selected.package.eslint" value="(autodetect)" />
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="settings.editor.selected.configurable" value="web.server" />
   </component>
   <component name="SvnConfiguration">
     <configuration />
@@ -78,7 +77,14 @@
       <workItem from="1591518166591" duration="521000" />
       <workItem from="1591618740405" duration="2072000" />
       <workItem from="1591664730416" duration="16446000" />
-      <workItem from="1591772314861" duration="27298000" />
+      <workItem from="1591772314861" duration="29219000" />
+      <workItem from="1592036435639" duration="205000" />
+      <workItem from="1592143608400" duration="308000" />
+      <workItem from="1592186466562" duration="791000" />
+      <workItem from="1592226865513" duration="147000" />
+      <workItem from="1592270292068" duration="377000" />
+      <workItem from="1592320487832" duration="117000" />
+      <workItem from="1622801598641" duration="1598000" />
     </task>
     <task id="LOCAL-00001" summary="update">
       <created>1591629968180</created>
@@ -106,25 +112,9 @@
     <option name="LAST_COMMIT_MESSAGE" value="update" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="320" y="115" key="#Inspections" timestamp="1589784689131">
+    <state x="229" y="86" key="SettingsEditor" timestamp="1622802500197">
       <screen x="0" y="0" width="1440" height="900" />
     </state>
-    <state x="320" y="115" key="#Inspections/0.0.1440.900@0.0.1440.900" timestamp="1589784689131" />
-    <state x="450" y="260" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1589788167013">
-      <screen x="0" y="0" width="1440" height="900" />
-    </state>
-    <state x="450" y="260" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1440.900@0.0.1440.900" timestamp="1589788167013" />
-    <state x="461" y="293" key="#com.intellij.ide.actions.ChooseComponentsToExportDialog" timestamp="1589788004889">
-      <screen x="0" y="0" width="1440" height="900" />
-    </state>
-    <state x="461" y="293" key="#com.intellij.ide.actions.ChooseComponentsToExportDialog/0.0.1440.900@0.0.1440.900" timestamp="1589788004889" />
-    <state x="303" y="52" key="CommitChangelistDialog2" timestamp="1591716166344">
-      <screen x="0" y="0" width="1440" height="900" />
-    </state>
-    <state x="303" y="52" key="CommitChangelistDialog2/0.0.1440.900@0.0.1440.900" timestamp="1591716166344" />
-    <state x="385" y="196" width="670" height="676" key="search.everywhere.popup" timestamp="1589960994600">
-      <screen x="0" y="0" width="1440" height="900" />
-    </state>
-    <state x="385" y="196" width="670" height="676" key="search.everywhere.popup/0.0.1440.900@0.0.1440.900" timestamp="1589960994600" />
+    <state x="229" y="86" key="SettingsEditor/0.0.1440.900@0.0.1440.900" timestamp="1622802500197" />
   </component>
 </project>
